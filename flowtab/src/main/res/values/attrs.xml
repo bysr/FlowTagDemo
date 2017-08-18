@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <declare-styleable name="SimpleFlowLayout">
+        <!--textview背景图片-->
+        <attr name="backgroundDefault" format="reference" />
+        <attr name="backgroundSelect" format="reference" />
+        <!--设置相邻text间距-->
+        <attr name="toLeftMargin" format="dimension" />
+        <attr name="toTopMargin" format="dimension" />
+        <attr name="toRightMargin" format="dimension" />
+        <attr name="toBottomMargin" format="dimension" />
+        <attr name="toMargin" format="dimension" />
+        <!--设置内间距-->
+        <attr name="toLeftPadding" format="dimension" />
+        <attr name="toTopPadding" format="dimension" />
+        <attr name="toRightPadding" format="dimension" />
+        <attr name="toBottomPadding" format="dimension" />
+        <attr name="toPadding" format="dimension" />
+
+        <!--文字大小-->
+        <attr name="markTextSize" format="dimension" />
+
+
+    </declare-styleable>
+
+
+</resources>
