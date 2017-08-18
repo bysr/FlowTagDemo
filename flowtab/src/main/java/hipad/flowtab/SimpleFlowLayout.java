@@ -1,11 +1,14 @@
 package hipad.flowtab;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -20,9 +23,9 @@ import java.util.Map;
 public class SimpleFlowLayout extends ViewGroup {
 
     /*存储标签文字*/
-    private List<String> mTexts = new ArrayList<>();
+    private List<String> mTexts;
 
-    private List<String> ChooseTexts = new ArrayList<>();
+    private List<String> ChooseTexts;
 
 
     /*存储测量的位置*/
@@ -30,6 +33,15 @@ public class SimpleFlowLayout extends ViewGroup {
 
     /*设备map对象存储居中导致的位置差*/
     private Map<Integer, Integer> map;
+
+    /*默认图片和选中图片*/
+    private int backgroundDefaultId, backgroundSelectId;
+    /*设置外间距*/
+    private float toLeftMargin, toRightMargin, toTopMargin, toBottomMargin, toMargin;
+    /*设置内间距*/
+    private float toLeftPadding, toRightPadding, toTopPadding, toBottomPadding, toPadding;
+    //文字大小
+    private float markTextSize;
 
     /**
      * 获取选中设备
@@ -46,13 +58,37 @@ public class SimpleFlowLayout extends ViewGroup {
 
     public SimpleFlowLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray t = context.obtainStyledAttributes(attrs, R.styleable.SimpleFlowLayout);
+        backgroundDefaultId = t.getResourceId(R.styleable.SimpleFlowLayout_backgroundDefault, R.drawable.shape_corner);
+        backgroundSelectId = t.getResourceId(R.styleable.SimpleFlowLayout_backgroundSelect, R.drawable.shape_corner_choose);
+
+        toMargin = t.getDimension(R.styleable.SimpleFlowLayout_toMargin, 5);
+        toLeftMargin = t.getDimension(R.styleable.SimpleFlowLayout_toLeftMargin, toMargin);
+        toTopMargin = t.getDimension(R.styleable.SimpleFlowLayout_toTopMargin, toMargin);
+        toRightMargin = t.getDimension(R.styleable.SimpleFlowLayout_toRightMargin, toMargin);
+        toBottomMargin = t.getDimension(R.styleable.SimpleFlowLayout_toBottomMargin, toMargin);
+
+        toPadding = t.getDimension(R.styleable.SimpleFlowLayout_toPadding, 10);
+        toLeftPadding = t.getDimension(R.styleable.SimpleFlowLayout_toLeftPadding, toPadding);
+        toTopPadding = t.getDimension(R.styleable.SimpleFlowLayout_toTopPadding, toPadding);
+        toRightPadding = t.getDimension(R.styleable.SimpleFlowLayout_toRightPadding, toPadding);
+        toBottomPadding = t.getDimension(R.styleable.SimpleFlowLayout_toBottomPadding, toPadding);
+
+
+        markTextSize = t.getDimension(R.styleable.SimpleFlowLayout_markTextSize, 16);
+
+
+
+
+
         //初始化条件
         map = new HashMap<>();
-
+        ChooseTexts = new ArrayList<>();
+        mTexts = new ArrayList<>();
     }
 
     public interface OnClickChildListener {
-        void OnClickChild(int position);
+        void OnClickChild(int position, boolean isChecked);
     }
 
 
@@ -150,11 +186,10 @@ public class SimpleFlowLayout extends ViewGroup {
 
                 length++;
                 widthAll = 0;
-
             }
 
             //----新添加-----------
-            widthAll += child.getMeasuredWidth();
+            widthAll += /*child.getMeasuredWidth()*/+childWidth;
 
             left = x + lp.leftMargin;
             top = y + lp.topMargin;
@@ -212,24 +247,24 @@ public class SimpleFlowLayout extends ViewGroup {
         view.setText(mTexts.get(position));
         view.setGravity(Gravity.CENTER);
         view.setBackgroundResource(R.drawable.shape_corner);
-        view.setPadding(20, 10, 20, 10);
-        view.setTextSize(16);
+        view.setPadding((int) toLeftPadding, (int) toTopPadding, (int) toRightPadding, (int) toBottomPadding);
+        view.setTextSize(markTextSize);
 
         view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-
                     if (ChooseTexts.contains(mTexts.get(position))) {
                         ChooseTexts.remove(mTexts.get(position));
-                        view.setBackgroundResource(R.drawable.shape_corner);
+                        view.setBackgroundResource(backgroundDefaultId);
+                        listener.OnClickChild(position, false);
                     } else {
                         ChooseTexts.add(mTexts.get(position));
-                        view.setBackgroundResource(R.drawable.shape_corner_choose);
+                        view.setBackgroundResource(backgroundSelectId);
+                        listener.OnClickChild(position, true);
                     }
 
 
-                    listener.OnClickChild(position);
                 }
 
             }
@@ -245,12 +280,11 @@ public class SimpleFlowLayout extends ViewGroup {
         MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        int margin = 5;
 
-        lp.leftMargin = margin;
-        lp.rightMargin = margin;
-        lp.topMargin = margin;
-        lp.bottomMargin = margin;
+        lp.leftMargin = (int) toLeftMargin;
+        lp.rightMargin = (int) toRightMargin;
+        lp.topMargin = (int) toTopMargin;
+        lp.bottomMargin = (int) toBottomMargin;
 
 
         return lp;
