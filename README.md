@@ -47,7 +47,7 @@ toMargin | 统一设置的外间距
 toLeftMargin | 左侧外间距
 toTopMargin | 顶部外间距
 toRightMargin | 右侧外间距
-toBottomMargin | 地面外间距
+toBottomMargin | 底部外间距
 toPadding | 统一设置的内间距
 toLeftPadding | 左边内间距
 toTopPadding | 顶部内间距
